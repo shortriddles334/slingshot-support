@@ -1,0 +1,59 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-synthesis: none;
+  background: #111124;
+  color: #f6f4ff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse 110% 48% at 50% -10%, #35306a 0%, transparent 73%), #111124;
+  line-height: 1.65;
+}
+.container { width: min(800px, calc(100% - 36px)); margin-inline: auto; }
+header { border-bottom: 1px solid #4a4667; padding: 17px 0; }
+header .container { display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.brand { color: #fff; font-size: 1rem; font-weight: 750; letter-spacing: .03em; text-decoration: none; }
+nav { display: flex; gap: 22px; }
+main { padding: 48px 0 58px; }
+h1 { font-size: clamp(2rem, 5vw, 3.3rem); letter-spacing: -.035em; line-height: 1.16; margin: 0 0 18px; }
+h2 { font-size: 1.35rem; margin: 0 0 12px; color: #fff; }
+h3 { font-size: 1.05rem; margin: 24px 0 6px; }
+p { margin: 0 0 14px; }
+.lead { color: #d7d1eb; font-size: 1.12rem; margin-bottom: 27px; }
+.muted { color: #bfb9d3; }
+.small { font-size: .91rem; }
+a { color: #8be6dc; text-underline-offset: .18em; }
+a:hover { color: #c1fff8; }
+nav a { font-size: .95rem; }
+a:focus-visible { outline: 3px solid #ffc765; outline-offset: 4px; border-radius: 3px; }
+.panel { background: #22213b; border: 1px solid #524e79; border-radius: 15px; padding: 25px; margin: 30px 0; }
+.email-link {
+  display: inline-block;
+  margin: 4px 0 13px;
+  font-size: clamp(.87rem, 2.5vw, 1.09rem);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.button-link {
+  display: inline-block;
+  margin: 5px 0 15px;
+  background: #8be6dc; color: #121329;
+  font-weight: 750; text-decoration: none;
+  border-radius: 10px; padding: 11px 18px;
+}
+.button-link:hover { background: #c1fff8; color: #121329; }
+.rule { border: 0; border-top: 1px solid #4a4667; margin: 32px 0; }
+article { margin-top: 18px; }
+ul { margin: 10px 0 20px; padding-left: 24px; }
+li { margin: 8px 0; }
+footer { border-top: 1px solid #4a4667; padding: 22px 0 32px; color: #bfb9d3; font-size: .91rem; }
+footer .container { display: flex; gap: 14px; justify-content: space-between; flex-wrap: wrap; }
+.skip { position: absolute; left: 10px; top: -90px; background: #fff; color: #111124; padding: 9px 12px; z-index: 10; }
+.skip:focus { top: 12px; }
+@media (max-width: 540px) {
+  main { padding-top: 34px; }
+  .panel { padding: 18px; }
+}
