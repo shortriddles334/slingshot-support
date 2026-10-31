@@ -164,7 +164,8 @@
   .hangar-preview{margin:0 0 6px}
   #hangarPreviewCanvas{display:block;width:100%;max-width:none;height:auto;aspect-ratio:240/72;border-radius:8px;border:1px solid #A99CD6;margin:0 auto}
   .hangar-kind{margin-top:8px;color:#F3EFFF;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
-  .hangar-row{display:flex;align-items:center;gap:8px;min-height:44px}
+  /* B8d: pack rows and Restore lay out like item rows; their own class keeps item-row checks to items */
+  .hangar-row,.hangar-pack-row{display:flex;align-items:center;gap:8px;min-height:44px}
   .hangar-name{flex:1 1 auto;min-width:0;color:#F3EFFF;font-size:14px;line-height:1.3;font-weight:700}
   .hangar-gate,.hangar-cost{flex:0 0 auto;color:#F3EFFF;font-size:12px;line-height:1.3;font-weight:700}
   .hangar-act{flex:0 0 auto;min-width:72px;min-height:44px;padding:8px 12px;border-radius:10px;cursor:pointer;
@@ -706,6 +707,7 @@
       <button class="settings-row" id="setColor" type="button" aria-pressed="false">Color-blind rings off</button>
       <button class="settings-row" id="setEffects" type="button" aria-pressed="false">Reduced effects off</button>
       <button class="settings-row" id="setGhost" type="button" aria-pressed="true">Show ghost on</button>
+      <button class="settings-row" id="setSimpleGhost" type="button" aria-pressed="false">Simple rival ghosts off</button>
     </div>
     </div>
   </div>
@@ -841,6 +843,7 @@ const I18N = Object.freeze({
   "flick.announce": Object.freeze({ "en": "Tap again mid-flight to steer", "es": "Toca otra vez en pleno vuelo para girar", "de": "Im Flug nochmal tippen zum Lenken", "fr": "Touche à nouveau en vol pour diriger", "ja": "飛行中にもう一度タップで軌道修正", "pt-BR": "Toque de novo durante o voo para direcionar" }),
   "tut.watch": Object.freeze({ "en": "Watch the comet reach the glow", "es": "Mira cómo el cometa llega al resplandor", "de": "Sieh zu, wie der Komet das Leuchten erreicht", "fr": "Regarde la comète atteindre la lueur", "ja": "彗星が光に届くのを見よう", "pt-BR": "Veja o cometa chegar ao brilho" }),
   "tut.catch": Object.freeze({ "en": "The ring around the next planet catches you", "es": "El anillo del siguiente planeta te atrapa", "de": "Der Ring um den nächsten Planeten fängt dich", "fr": "L'anneau de la planète suivante t'attrape", "ja": "次の惑星の輪がキャッチしてくれる", "pt-BR": "O anel do próximo planeta pega você" }),
+  "tut.missed": Object.freeze({ "en": "Missed! In a real run a miss can end it. Try again", "es": "¡Fallaste! En una partida real un fallo puede acabarla. Otra vez", "de": "Daneben! In einem echten Lauf kann das das Ende sein. Nochmal", "fr": "Raté ! En vraie partie, un raté peut tout finir. Réessaie", "ja": "ミス！本番ではミスで終わることも。もう一度", "pt-BR": "Errou! Numa partida real um erro pode encerrá-la. De novo" }),
   "tut.tapNow": Object.freeze({ "en": "Tap now", "es": "Toca ahora", "de": "Jetzt tippen", "fr": "Touche maintenant", "ja": "今タップ", "pt-BR": "Toque agora" }),
   "tut.yourTurn": Object.freeze({ "en": "Your turn: tap in the glow", "es": "Tu turno: toca en el resplandor", "de": "Du bist dran: tippe im Leuchten", "fr": "À toi : touche dans la lueur", "ja": "あなたの番：光の中でタップ", "pt-BR": "Sua vez: toque no brilho" }),
   "tut.void": Object.freeze({ "en": "The void rises. Keep moving up", "es": "El vacío sube. Sigue subiendo", "de": "Die Leere steigt. Weiter nach oben", "fr": "Le vide monte. Continue de monter", "ja": "虚無が上昇中。上へ進み続けよう", "pt-BR": "O vazio sobe. Continue subindo" }),
@@ -858,12 +861,14 @@ const I18N = Object.freeze({
   "hangar.equipped": Object.freeze({ "en": "Equipped", "es": "Equipado", "de": "Ausgerüstet", "fr": "Équipé", "ja": "装備中", "pt-BR": "Equipado" }),
   "hangar.group.comet": Object.freeze({ "en": "Comet", "es": "Cometa", "de": "Komet", "fr": "Comète", "ja": "彗星", "pt-BR": "Cometa" }),
   "hangar.group.instrument": Object.freeze({ "en": "Instrument", "es": "Instrumento", "de": "Instrument", "fr": "Instrument", "ja": "楽器", "pt-BR": "Instrumento" }),
+  "hangar.group.premium": Object.freeze({ "en": "Premium", "es": "Premium", "de": "Premium", "fr": "Premium", "ja": "プレミアム", "pt-BR": "Premium" }),
   "hangar.group.theme": Object.freeze({ "en": "Theme", "es": "Tema", "de": "Thema", "fr": "Thème", "ja": "テーマ", "pt-BR": "Tema" }),
   "hangar.group.trail": Object.freeze({ "en": "Trail", "es": "Estela", "de": "Spur", "fr": "Traînée", "ja": "軌跡", "pt-BR": "Rastro" }),
   "hangar.locked": Object.freeze({ "en": "Locked", "es": "Bloqueado", "de": "Gesperrt", "fr": "Verrouillé", "ja": "ロック中", "pt-BR": "Bloqueado" }),
   "hangar.need": Object.freeze({ "en": "Need {n} ✦", "es": "Faltan {n} ✦", "de": "Noch {n} ✦", "fr": "Il manque {n} ✦", "ja": "あと {n} ✦", "pt-BR": "Faltam {n} ✦" }),
   "hangar.owned": Object.freeze({ "en": "Owned", "es": "Obtenido", "de": "Im Besitz", "fr": "Possédé", "ja": "所持済み", "pt-BR": "Obtido" }),
   "hangar.preview": Object.freeze({ "en": "Preview: {name}", "es": "Vista previa: {name}", "de": "Vorschau: {name}", "fr": "Aperçu\u00a0: {name}", "ja": "プレビュー：{name}", "pt-BR": "Prévia: {name}" }),
+  "hangar.previewBtn": Object.freeze({ "en": "Preview", "es": "Ver", "de": "Ansehen", "fr": "Voir", "ja": "試す", "pt-BR": "Ver" }),
   "hangar.shortfall": Object.freeze({ "en": "Need {short} more stardust for {name}. You have {dust}.", "es": "Te faltan {short} de polvo estelar para {name}. Tienes {dust}.", "de": "Dir fehlen {short} Sternenstaub für {name}. Du hast {dust}.", "fr": "Il te manque {short} poussières d'étoile pour {name}. Tu en as {dust}.", "ja": "{name}にはスターダストがあと{short}必要です。所持：{dust}", "pt-BR": "Faltam {short} de poeira estelar para {name}. Você tem {dust}." }),
   "hud.best": Object.freeze({ "en": "BEST {score}", "es": "MEJOR {score}", "de": "REKORD {score}", "fr": "RECORD {score}", "ja": "ベスト {score}", "pt-BR": "MELHOR {score}" }),
   "hud.bestCheckpoint": Object.freeze({ "en": "CHECKPOINT BEST {score}", "es": "MEJOR CHECKPOINT {score}", "de": "CHECKPOINT-REKORD {score}", "fr": "RECORD CHECKPOINT {score}", "ja": "チェックポイントベスト {score}", "pt-BR": "MELHOR CHECKPOINT {score}" }),
@@ -883,22 +888,39 @@ const I18N = Object.freeze({
   "instr.pad": Object.freeze({ "en": "Synth Pad", "es": "Pad sintetizado", "de": "Synth-Pad", "fr": "Pad synthé", "ja": "シンセパッド", "pt-BR": "Pad sintetizador" }),
   "instr.pizz": Object.freeze({ "en": "Pizzicato", "es": "Pizzicato", "de": "Pizzicato", "fr": "Pizzicato", "ja": "ピチカート", "pt-BR": "Pizzicato" }),
   "item.aurora": Object.freeze({ "en": "Aurora", "es": "Aurora", "de": "Aurora", "fr": "Aurore", "ja": "オーロラ", "pt-BR": "Aurora" }),
+  "item.beaconPulsar": Object.freeze({ "en": "Beacon Pulsar", "es": "Púlsar faro", "de": "Leuchtfeuer-Pulsar", "fr": "Pulsar phare", "ja": "ビーコン・パルサー", "pt-BR": "Pulsar farol" }),
+  "item.binaryPulsar": Object.freeze({ "en": "Binary Pulsar", "es": "Púlsar binario", "de": "Doppelpulsar", "fr": "Pulsar binaire", "ja": "連星パルサー", "pt-BR": "Pulsar binário" }),
   "item.borealis": Object.freeze({ "en": "Borealis", "es": "Boreal", "de": "Borealis", "fr": "Boréale", "ja": "ボレアリス", "pt-BR": "Boreal" }),
   "item.classic": Object.freeze({ "en": "Classic", "es": "Clásico", "de": "Klassisch", "fr": "Classique", "ja": "クラシック", "pt-BR": "Clássico" }),
   "item.dusk": Object.freeze({ "en": "Dusk", "es": "Crepúsculo", "de": "Dämmerung", "fr": "Crépuscule", "ja": "夕暮れ", "pt-BR": "Crepúsculo" }),
+  "item.echoGhost": Object.freeze({ "en": "Echo Ghost", "es": "Fantasma eco", "de": "Echogeist", "fr": "Fantôme écho", "ja": "エコーゴースト", "pt-BR": "Fantasma eco" }),
   "item.ember": Object.freeze({ "en": "Ember Thread", "es": "Hilo de brasas", "de": "Glutfaden", "fr": "Fil de braise", "ja": "残り火の糸", "pt-BR": "Fio de brasa" }),
   "item.emberfield": Object.freeze({ "en": "Emberfield", "es": "Campo de brasas", "de": "Glutfeld", "fr": "Champ de braise", "ja": "残り火の原野", "pt-BR": "Campo de brasa" }),
+  "item.finishEffects": Object.freeze({ "en": "Finish Effects", "es": "Efectos de final", "de": "Finale-Effekte", "fr": "Effets de final", "ja": "フィニッシュ演出", "pt-BR": "Efeitos de final" }),
+  "item.foundersBundle": Object.freeze({ "en": "Founder's Bundle", "es": "Paquete fundador", "de": "Gründerpaket", "fr": "Pack fondateur", "ja": "ファウンダーバンドル", "pt-BR": "Pacote fundador" }),
   "item.glacier": Object.freeze({ "en": "Glacier", "es": "Glaciar", "de": "Gletscher", "fr": "Glacier", "ja": "氷河", "pt-BR": "Geleira" }),
+  "item.goldenThread": Object.freeze({ "en": "Golden Thread", "es": "Hilo dorado", "de": "Goldener Faden", "fr": "Fil doré", "ja": "金の糸", "pt-BR": "Fio dourado" }),
   "item.halo": Object.freeze({ "en": "Halo Thread", "es": "Hilo de halo", "de": "Halofaden", "fr": "Fil de halo", "ja": "ハローの糸", "pt-BR": "Fio de halo" }),
   "item.ion": Object.freeze({ "en": "Ion Thread", "es": "Hilo iónico", "de": "Ionenfaden", "fr": "Fil ionique", "ja": "イオンの糸", "pt-BR": "Fio iônico" }),
+  "item.magnetar": Object.freeze({ "en": "Magnetar", "es": "Magnetar", "de": "Magnetar", "fr": "Magnétar", "ja": "マグネター", "pt-BR": "Magnetar" }),
+  "item.meteorShower": Object.freeze({ "en": "Meteor Shower", "es": "Lluvia de meteoros", "de": "Meteorschauer", "fr": "Pluie de météores", "ja": "流星群", "pt-BR": "Chuva de meteoros" }),
   "item.nebula": Object.freeze({ "en": "Nebula", "es": "Nebulosa", "de": "Nebel", "fr": "Nébuleuse", "ja": "ネビュラ", "pt-BR": "Nebulosa" }),
   "item.night": Object.freeze({ "en": "Night Sky", "es": "Cielo nocturno", "de": "Nachthimmel", "fr": "Ciel nocturne", "ja": "夜空", "pt-BR": "Céu noturno" }),
+  "item.nylonStrings": Object.freeze({ "en": "Nylon Strings", "es": "Cuerdas de nailon", "de": "Nylonsaiten", "fr": "Cordes nylon", "ja": "ナイロン弦", "pt-BR": "Cordas de náilon" }),
   "item.petal": Object.freeze({ "en": "Petal Thread", "es": "Hilo de pétalos", "de": "Blütenfaden", "fr": "Fil de pétales", "ja": "花びらの糸", "pt-BR": "Fio de pétalas" }),
+  "item.prismGhost": Object.freeze({ "en": "Prism Ghost", "es": "Fantasma prisma", "de": "Prismengeist", "fr": "Fantôme prisme", "ja": "プリズムゴースト", "pt-BR": "Fantasma prisma" }),
+  "item.pulsarComets": Object.freeze({ "en": "Pulsar Comets", "es": "Cometas púlsar", "de": "Pulsar-Kometen", "fr": "Comètes pulsar", "ja": "パルサー彗星", "pt-BR": "Cometas pulsar" }),
+  "item.rivalGhostStyles": Object.freeze({ "en": "Rival Ghost Styles", "es": "Estilos de fantasma rival", "de": "Rivalen-Geisterstile", "fr": "Styles de fantôme rival", "ja": "ライバルゴーストスタイル", "pt-BR": "Estilos de fantasma rival" }),
   "item.solar": Object.freeze({ "en": "Solar", "es": "Solar", "de": "Solar", "fr": "Solaire", "ja": "ソーラー", "pt-BR": "Solar" }),
   "item.spark": Object.freeze({ "en": "Spark Thread", "es": "Hilo chispeante", "de": "Funkenfaden", "fr": "Fil étincelant", "ja": "火花の糸", "pt-BR": "Fio de faíscas" }),
+  "item.standardFinish": Object.freeze({ "en": "Standard Finish", "es": "Final estándar", "de": "Standard-Finale", "fr": "Final standard", "ja": "標準フィニッシュ", "pt-BR": "Final padrão" }),
+  "item.standardGhost": Object.freeze({ "en": "Standard Ghost", "es": "Fantasma estándar", "de": "Standardgeist", "fr": "Fantôme standard", "ja": "標準ゴースト", "pt-BR": "Fantasma padrão" }),
+  "item.stringsPack": Object.freeze({ "en": "Strings Pack", "es": "Paquete de cuerdas", "de": "Saiten-Paket", "fr": "Pack cordes", "ja": "ストリングスパック", "pt-BR": "Pacote de cordas" }),
   "item.sunrise": Object.freeze({ "en": "Sunrise", "es": "Amanecer", "de": "Sonnenaufgang", "fr": "Lever de soleil", "ja": "日の出", "pt-BR": "Nascer do sol" }),
+  "item.supernova": Object.freeze({ "en": "Supernova", "es": "Supernova", "de": "Supernova", "fr": "Supernova", "ja": "超新星", "pt-BR": "Supernova" }),
   "item.thread": Object.freeze({ "en": "Plain Thread", "es": "Hilo liso", "de": "Schlichter Faden", "fr": "Fil simple", "ja": "シンプルな糸", "pt-BR": "Fio simples" }),
   "item.veil": Object.freeze({ "en": "Veil Thread", "es": "Hilo de velo", "de": "Schleierfaden", "fr": "Fil voilé", "ja": "ベールの糸", "pt-BR": "Fio de véu" }),
+  "item.wispGhost": Object.freeze({ "en": "Wisp Ghost", "es": "Fantasma fuego fatuo", "de": "Irrlicht-Geist", "fr": "Fantôme feu follet", "ja": "鬼火ゴースト", "pt-BR": "Fantasma fogo-fátuo" }),
   "meta.allDone": Object.freeze({ "en": "All missions complete", "es": "Todas las misiones completadas", "de": "Alle Missionen abgeschlossen", "fr": "Toutes les missions accomplies", "ja": "すべてのミッション達成", "pt-BR": "Todas as missões concluídas" }),
   "meta.headline": Object.freeze({ "en": "Rank {rank} · ✦ {dust}", "es": "Rango {rank} · ✦ {dust}", "de": "Rang {rank} · ✦ {dust}", "fr": "Rang {rank} · ✦ {dust}", "ja": "ランク {rank} · ✦ {dust}", "pt-BR": "Rank {rank} · ✦ {dust}" }),
   "meta.notSaved": Object.freeze({ "en": " · not saved", "es": " · sin guardar", "de": " · nicht gespeichert", "fr": " · non sauvegardé", "ja": " · 未保存", "pt-BR": " · não salvo" }),
@@ -989,6 +1011,8 @@ const I18N = Object.freeze({
   "set.effectsOn": Object.freeze({ "en": "Reduced effects on", "es": "Efectos reducidos activados", "de": "Reduzierte Effekte an", "fr": "Effets réduits activés", "ja": "エフェクト軽減 オン", "pt-BR": "Efeitos reduzidos ligados" }),
   "set.ghostOff": Object.freeze({ "en": "Show ghost off", "es": "Fantasma: desactivado", "de": "Geist anzeigen aus", "fr": "Fantôme\u00a0: désactivé", "ja": "ゴースト表示 オフ", "pt-BR": "Fantasma: desligado" }),
   "set.ghostOn": Object.freeze({ "en": "Show ghost on", "es": "Fantasma: activado", "de": "Geist anzeigen an", "fr": "Fantôme\u00a0: activé", "ja": "ゴースト表示 オン", "pt-BR": "Fantasma: ligado" }),
+  "set.simpleGhostOff": Object.freeze({ "en": "Simple rival ghosts off", "es": "Fantasmas simples: desactivado", "de": "Einfache Geister aus", "fr": "Fantômes simples\u00a0: désactivé", "ja": "シンプルなゴースト オフ", "pt-BR": "Fantasmas simples: desligado" }),
+  "set.simpleGhostOn": Object.freeze({ "en": "Simple rival ghosts on", "es": "Fantasmas simples: activado", "de": "Einfache Geister an", "fr": "Fantômes simples\u00a0: activé", "ja": "シンプルなゴースト オン", "pt-BR": "Fantasmas simples: ligado" }),
   "set.hapticsOff": Object.freeze({ "en": "Haptics off", "es": "Vibración desactivada", "de": "Haptik aus", "fr": "Vibrations désactivées", "ja": "振動 オフ", "pt-BR": "Vibração desligada" }),
   "set.hapticsOn": Object.freeze({ "en": "Haptics on", "es": "Vibración activada", "de": "Haptik an", "fr": "Vibrations activées", "ja": "振動 オン", "pt-BR": "Vibração ligada" }),
   "set.musicOff": Object.freeze({ "en": "Music off", "es": "Música desactivada", "de": "Musik aus", "fr": "Musique désactivée", "ja": "ミュージック オフ", "pt-BR": "Música desligada" }),
@@ -1001,6 +1025,26 @@ const I18N = Object.freeze({
   "set.turnHapticsOn": Object.freeze({ "en": "Turn haptics on", "es": "Activar vibración", "de": "Haptik einschalten", "fr": "Activer les vibrations", "ja": "振動をオンにする", "pt-BR": "Ligar a vibração" }),
   "set.turnSoundOff": Object.freeze({ "en": "Turn sound off", "es": "Desactivar sonido", "de": "Ton ausschalten", "fr": "Désactiver le son", "ja": "サウンドをオフにする", "pt-BR": "Desligar o som" }),
   "set.turnSoundOn": Object.freeze({ "en": "Turn sound on", "es": "Activar sonido", "de": "Ton einschalten", "fr": "Activer le son", "ja": "サウンドをオンにする", "pt-BR": "Ligar o som" }),
+  "shop.buyAria": Object.freeze({ "en": "Buy {name} for {price}", "es": "Comprar {name} por {price}", "de": "{name} für {price} kaufen", "fr": "Acheter {name} pour {price}", "ja": "{name}を{price}で購入", "pt-BR": "Comprar {name} por {price}" }),
+  "shop.inApp": Object.freeze({ "en": "Premium packs are available in the app.", "es": "Los paquetes premium están disponibles en la app.", "de": "Premium-Pakete gibt es in der App.", "fr": "Les packs premium sont disponibles dans l'app.", "ja": "プレミアムパックはアプリで入手できます。", "pt-BR": "Os pacotes premium estão disponíveis no app." }),
+  "shop.msg.cancelled": Object.freeze({ "en": "Purchase cancelled.", "es": "Compra cancelada.", "de": "Kauf abgebrochen.", "fr": "Achat annulé.", "ja": "購入をキャンセルしました。", "pt-BR": "Compra cancelada." }),
+  "shop.msg.cannotBuy": Object.freeze({ "en": "This pack can't be bought right now.", "es": "Este paquete no se puede comprar ahora.", "de": "Dieses Paket kann gerade nicht gekauft werden.", "fr": "Ce pack ne peut pas être acheté pour le moment.", "ja": "このパックは現在購入できません。", "pt-BR": "Este pacote não pode ser comprado agora." }),
+  "shop.msg.failed": Object.freeze({ "en": "The purchase could not be completed. Check your App Store purchases before trying again.", "es": "No se pudo completar la compra. Revisa tus compras del App Store antes de volver a intentarlo.", "de": "Der Kauf konnte nicht abgeschlossen werden. Prüfe deine App-Store-Käufe, bevor du es erneut versuchst.", "fr": "L'achat n'a pas pu aboutir. Vérifie tes achats sur l'App Store avant de réessayer.", "ja": "購入を完了できませんでした。もう一度試す前にApp Storeの購入履歴を確認してください。", "pt-BR": "Não foi possível concluir a compra. Confira suas compras na App Store antes de tentar de novo." }),
+  "shop.msg.failedStore": Object.freeze({ "en": "The purchase could not be completed. Check your store purchases before trying again.", "es": "No se pudo completar la compra. Revisa tus compras en la tienda antes de volver a intentarlo.", "de": "Der Kauf konnte nicht abgeschlossen werden. Prüfe deine Store-Käufe, bevor du es erneut versuchst.", "fr": "L'achat n'a pas pu aboutir. Vérifie tes achats sur la boutique avant de réessayer.", "ja": "購入を完了できませんでした。もう一度試す前にストアの購入履歴を確認してください。", "pt-BR": "Não foi possível concluir a compra. Confira suas compras na loja antes de tentar de novo." }),
+  "shop.msg.incomplete": Object.freeze({ "en": "The purchase is not complete. You can keep playing or restore purchases later.", "es": "La compra no está completa. Puedes seguir jugando o restaurar las compras más tarde.", "de": "Der Kauf ist nicht abgeschlossen. Du kannst weiterspielen oder Käufe später wiederherstellen.", "fr": "L'achat n'est pas terminé. Tu peux continuer à jouer ou restaurer tes achats plus tard.", "ja": "購入は完了していません。プレイを続けるか、後で購入を復元できます。", "pt-BR": "A compra não foi concluída. Você pode continuar jogando ou restaurar as compras depois." }),
+  "shop.msg.nothingToRestore": Object.freeze({ "en": "No pack purchases were found for this Apple Account.", "es": "No se encontraron compras de paquetes en esta cuenta de Apple.", "de": "Für diesen Apple-Account wurden keine Paketkäufe gefunden.", "fr": "Aucun achat de pack n'a été trouvé pour ce compte Apple.", "ja": "このApple Accountでのパック購入は見つかりませんでした。", "pt-BR": "Nenhuma compra de pacote foi encontrada nesta Conta Apple." }),
+  "shop.msg.nothingToRestoreStore": Object.freeze({ "en": "No pack purchases were found for this account.", "es": "No se encontraron compras de paquetes en esta cuenta.", "de": "Für dieses Konto wurden keine Paketkäufe gefunden.", "fr": "Aucun achat de pack n'a été trouvé pour ce compte.", "ja": "このアカウントでのパック購入は見つかりませんでした。", "pt-BR": "Nenhuma compra de pacote foi encontrada nesta conta." }),
+  "shop.msg.offline": Object.freeze({ "en": "The store could not be reached. Play offline, or try the store again later.", "es": "No se pudo conectar con la tienda. Juega sin conexión o vuelve a intentarlo más tarde.", "de": "Der Store ist nicht erreichbar. Spiel offline oder versuch es später noch einmal.", "fr": "Impossible de joindre la boutique. Joue hors ligne ou réessaie plus tard.", "ja": "ストアに接続できませんでした。オフラインでプレイするか、後でもう一度お試しください。", "pt-BR": "Não foi possível acessar a loja. Jogue offline ou tente de novo mais tarde." }),
+  "shop.msg.pending": Object.freeze({ "en": "Awaiting purchase approval. Nothing is unlocked yet; you can keep playing.", "es": "Esperando la aprobación de la compra. Aún no se ha desbloqueado nada; puedes seguir jugando.", "de": "Kauf wartet auf Freigabe. Noch ist nichts freigeschaltet; du kannst weiterspielen.", "fr": "Achat en attente d'approbation. Rien n'est encore débloqué ; tu peux continuer à jouer.", "ja": "購入の承認待ちです。まだ何も解放されていません。プレイを続けられます。", "pt-BR": "Aguardando aprovação da compra. Nada foi desbloqueado ainda; você pode continuar jogando." }),
+  "shop.msg.received": Object.freeze({ "en": "Purchase received. Restore Purchases if your pack does not appear.", "es": "Compra recibida. Restaura las compras si tu paquete no aparece.", "de": "Kauf erhalten. Stell deine Käufe wieder her, falls dein Paket nicht erscheint.", "fr": "Achat reçu. Restaure tes achats si ton pack n'apparaît pas.", "ja": "購入を受け付けました。パックが表示されない場合は購入を復元してください。", "pt-BR": "Compra recebida. Restaure as compras se o pacote não aparecer." }),
+  "shop.msg.restoreFailed": Object.freeze({ "en": "Restore could not finish. Check your connection and Apple Account, then try again.", "es": "No se pudo completar la restauración. Revisa tu conexión y tu cuenta de Apple e inténtalo de nuevo.", "de": "Wiederherstellen fehlgeschlagen. Prüfe deine Verbindung und deinen Apple-Account und versuch es erneut.", "fr": "La restauration n'a pas pu aboutir. Vérifie ta connexion et ton compte Apple, puis réessaie.", "ja": "復元を完了できませんでした。接続とApple Accountを確認して、もう一度お試しください。", "pt-BR": "Não foi possível concluir a restauração. Confira sua conexão e sua Conta Apple e tente de novo." }),
+  "shop.msg.restoreFailedStore": Object.freeze({ "en": "Restore could not finish. Check your connection and account, then try again.", "es": "No se pudo completar la restauración. Revisa tu conexión y tu cuenta e inténtalo de nuevo.", "de": "Wiederherstellen fehlgeschlagen. Prüfe deine Verbindung und dein Konto und versuch es erneut.", "fr": "La restauration n'a pas pu aboutir. Vérifie ta connexion et ton compte, puis réessaie.", "ja": "復元を完了できませんでした。接続とアカウントを確認して、もう一度お試しください。", "pt-BR": "Não foi possível concluir a restauração. Confira sua conexão e sua conta e tente de novo." }),
+  "shop.msg.restored": Object.freeze({ "en": "Purchases restored.", "es": "Compras restauradas.", "de": "Käufe wiederhergestellt.", "fr": "Achats restaurés.", "ja": "購入を復元しました。", "pt-BR": "Compras restauradas." }),
+  "shop.msg.revoked": Object.freeze({ "en": "This purchase is no longer active. Everything else stays as it was.", "es": "Esta compra ya no está activa. Todo lo demás sigue igual.", "de": "Dieser Kauf ist nicht mehr aktiv. Alles andere bleibt, wie es war.", "fr": "Cet achat n'est plus actif. Tout le reste ne change pas.", "ja": "この購入は無効になりました。それ以外はそのままです。", "pt-BR": "Esta compra não está mais ativa. Todo o resto continua igual." }),
+  "shop.msg.thanks": Object.freeze({ "en": "Thank you! Your pack is ready in the Hangar.", "es": "¡Gracias! Tu paquete ya está en el Hangar.", "de": "Danke! Dein Paket ist im Hangar bereit.", "fr": "Merci ! Ton pack est prêt dans le Hangar.", "ja": "ありがとうございます！パックはハンガーで使えます。", "pt-BR": "Obrigado! Seu pacote está pronto no Hangar." }),
+  "shop.msg.unavailable": Object.freeze({ "en": "The shop is unavailable right now. The full game is still free.", "es": "La tienda no está disponible ahora. El juego completo sigue siendo gratis.", "de": "Der Shop ist gerade nicht verfügbar. Das ganze Spiel bleibt kostenlos.", "fr": "La boutique est indisponible pour le moment. Le jeu complet reste gratuit.", "ja": "ショップは現在利用できません。ゲームはすべて無料で遊べます。", "pt-BR": "A loja está indisponível agora. O jogo completo continua grátis." }),
+  "shop.msg.unverified": Object.freeze({ "en": "Apple could not verify this purchase. Nothing new was unlocked. Try Restore Purchases.", "es": "Apple no pudo verificar esta compra. No se desbloqueó nada nuevo. Prueba a restaurar las compras.", "de": "Apple konnte diesen Kauf nicht bestätigen. Nichts Neues wurde freigeschaltet. Versuch, Käufe wiederherzustellen.", "fr": "Apple n'a pas pu vérifier cet achat. Rien de nouveau n'a été débloqué. Essaie de restaurer tes achats.", "ja": "Appleはこの購入を確認できませんでした。新しいものは解放されていません。購入の復元をお試しください。", "pt-BR": "A Apple não conseguiu verificar esta compra. Nada novo foi desbloqueado. Tente restaurar as compras." }),
+  "shop.restore": Object.freeze({ "en": "Restore Purchases", "es": "Restaurar compras", "de": "Käufe wiederherstellen", "fr": "Restaurer les achats", "ja": "購入を復元", "pt-BR": "Restaurar compras" }),
   "song.more": Object.freeze({ "en": " · +{n} more catches", "es": " · +{n} capturas más", "de": " · +{n} weitere Fänge", "fr": " · +{n} captures de plus", "ja": " · さらに +{n}", "pt-BR": " · +{n} capturas a mais" }),
   "song.tail": Object.freeze({ "en": "in {key} · {total} {unit}{more}", "es": "en {key} · {total} {unit}{more}", "de": "in {key} · {total} {unit}{more}", "fr": "en {key} · {total} {unit}{more}", "ja": "{key} · {total}{unit}{more}", "pt-BR": "em {key} · {total} {unit}{more}" }),
   "stats.best": Object.freeze({ "en": "Endless best: {n}", "es": "Mejor infinito: {n}", "de": "Endlos-Rekord: {n}", "fr": "Record mode infini\u00a0: {n}", "ja": "エンドレス最高：{n}", "pt-BR": "Melhor infinito: {n}" }),
@@ -1543,6 +1587,185 @@ const COSMETICS = Object.freeze([
   Object.freeze({ id: 'borealis', kind: 'theme', name: 'Borealis', rankMin: 6, cost: 280, style: '#10282A' }),
   Object.freeze({ id: 'sunrise', kind: 'theme', name: 'Sunrise', rankMin: 6, cost: 300, style: '#4A2418' })
 ]);
+// B8b premium packs (docs/launch/pricing_b8.md). Looks and sound only: nothing here reaches the sim, a score,
+// a catch window or a leaderboard. Ownership is never read from storage. A pack is owned only while the native
+// store's entitlement message lists it (setPremiumEntitlements); only the chosen item per kind is saved, and a
+// choice applies only while its pack is owned. ?premium=preview shows every item in the Hangar preview, never in a run.
+const PREMIUM_PRODUCT_PREFIX = 'com.shortygames.slingshotplanet.';
+const PREMIUM_PACKS = Object.freeze(['pack.pulsar', 'pack.ghosts', 'pack.strings', 'pack.finish']);
+const PREMIUM_BUNDLES = Object.freeze({ 'pack.founders': Object.freeze(['pack.pulsar', 'pack.ghosts']) });
+const PREMIUM_KINDS = Object.freeze(['comet', 'ghost', 'instrument', 'finish']);
+// pack null: the free standard look for a kind that has no stardust counterpart; picking it clears the choice.
+const PREMIUM_ITEMS = Object.freeze([
+  Object.freeze({ id: 'p-beacon', kind: 'comet', pack: 'pack.pulsar', name: 'Beacon Pulsar' }),
+  Object.freeze({ id: 'p-magnetar', kind: 'comet', pack: 'pack.pulsar', name: 'Magnetar' }),
+  Object.freeze({ id: 'p-binary', kind: 'comet', pack: 'pack.pulsar', name: 'Binary Pulsar' }),
+  Object.freeze({ id: 'g-standard', kind: 'ghost', pack: null, name: 'Standard Ghost' }),
+  Object.freeze({ id: 'g-wisp', kind: 'ghost', pack: 'pack.ghosts', name: 'Wisp Ghost' }),
+  Object.freeze({ id: 'g-prism', kind: 'ghost', pack: 'pack.ghosts', name: 'Prism Ghost' }),
+  Object.freeze({ id: 'g-echo', kind: 'ghost', pack: 'pack.ghosts', name: 'Echo Ghost' }),
+  Object.freeze({ id: 'strings', kind: 'instrument', pack: 'pack.strings', name: 'Nylon Strings' }),
+  Object.freeze({ id: 'f-standard', kind: 'finish', pack: null, name: 'Standard Finish' }),
+  Object.freeze({ id: 'f-supernova', kind: 'finish', pack: 'pack.finish', name: 'Supernova' }),
+  Object.freeze({ id: 'f-meteor', kind: 'finish', pack: 'pack.finish', name: 'Meteor Shower' }),
+  Object.freeze({ id: 'f-thread', kind: 'finish', pack: 'pack.finish', name: 'Golden Thread' })
+]);
+const PREMIUM_EQUIP_KEY = 'slingshot-planet-premium-equip';
+const SIMPLE_GHOSTS_KEY = 'slingshot-planet-simple-ghosts';
+function premiumPreviewFromSearch(search){ return /[?&]premium=preview(?:&|$)/.test(String(search || '')); }
+let premiumPreview = premiumPreviewFromSearch(typeof location !== 'undefined' && location ? location.search : '');
+let premiumOwned = Object.create(null); // pack id -> true, from the native entitlement message only
+let premiumEquip = null;                // { comet, ghost, instrument, finish }: item ids or null, loaded lazily
+let premiumPreviewItem = null;          // the Hangar preview's premium item id (drawing only)
+let simpleGhosts = false;               // Settings: plain ghosts whatever style is equipped (loaded once)
+const PREMIUM_BY_ID = Object.create(null); // id -> item: premiumActive runs in the draw loop
+for (let i = 0; i < PREMIUM_ITEMS.length; i++) PREMIUM_BY_ID[PREMIUM_ITEMS[i].id] = PREMIUM_ITEMS[i];
+function premiumItemById(id){
+  return typeof id === 'string' && PREMIUM_BY_ID[id] ? PREMIUM_BY_ID[id] : null;
+}
+function premiumItemOwned(id){
+  const item = premiumItemById(id);
+  return !!item && (item.pack === null || premiumOwned[item.pack] === true);
+}
+// The native store's whole list of owned product ids. Unknown ids are ignored; a bundle owns its packs.
+// Returns the owned pack ids. Anything that is not a list owns nothing.
+function setPremiumEntitlements(list){
+  const owned = Object.create(null);
+  const ids = Array.isArray(list) ? list.slice(0, 32) : [];
+  for (let i = 0; i < ids.length; i++){
+    const raw = ids[i];
+    if (typeof raw !== 'string' || raw.indexOf(PREMIUM_PRODUCT_PREFIX) !== 0) continue;
+    const pack = raw.slice(PREMIUM_PRODUCT_PREFIX.length);
+    if (PREMIUM_PACKS.indexOf(pack) >= 0) owned[pack] = true;
+    if (Object.prototype.hasOwnProperty.call(PREMIUM_BUNDLES, pack)) owned[pack] = true; // the bundle's own Owned row
+    const parts = Object.prototype.hasOwnProperty.call(PREMIUM_BUNDLES, pack) ? PREMIUM_BUNDLES[pack] : null;
+    if (parts) for (let k = 0; k < parts.length; k++) owned[parts[k]] = true;
+  }
+  premiumOwned = owned;
+  if (typeof hangarOpen !== 'undefined' && hangarOpen) renderHangar();
+  return PREMIUM_PACKS.filter(p => owned[p] === true);
+}
+function premiumEquipState(){
+  if (premiumEquip) return premiumEquip;
+  const raw = readStoredJson(PREMIUM_EQUIP_KEY);
+  premiumEquip = { comet: null, ghost: null, instrument: null, finish: null };
+  for (let i = 0; i < PREMIUM_KINDS.length; i++){
+    const kind = PREMIUM_KINDS[i];
+    const id = raw && typeof raw === 'object' ? raw[kind] : null;
+    const item = typeof id === 'string' ? premiumItemById(id) : null;
+    if (item && item.kind === kind && item.pack !== null) premiumEquip[kind] = id;
+  }
+  return premiumEquip;
+}
+// The premium item a kind shows right now, or null: chosen and its pack owned.
+function premiumActive(kind){
+  const st = premiumEquip || premiumEquipState();
+  const id = st[kind];
+  return id && premiumItemOwned(id) ? id : null;
+}
+function equipPremium(id){
+  const item = premiumItemById(id);
+  if (!item || !premiumItemOwned(id)) return false;
+  const st = premiumEquipState();
+  st[item.kind] = item.pack === null ? null : item.id;
+  writeStoredJson(PREMIUM_EQUIP_KEY, { comet: st.comet, ghost: st.ghost, instrument: st.instrument, finish: st.finish });
+  return true;
+}
+function clearPremiumChoice(kind){
+  const st = premiumEquipState();
+  if (st[kind] === null) return;
+  st[kind] = null;
+  writeStoredJson(PREMIUM_EQUIP_KEY, { comet: st.comet, ghost: st.ghost, instrument: st.instrument, finish: st.finish });
+}
+// One-way from native, like slingshot:cosmetic: only inside the app shell, and it can only show looks.
+window.addEventListener('slingshot:entitlements', event => {
+  const handler = window.webkit?.messageHandlers?.slingshot;
+  const android = ANDROID_SHELL && window.ZipwaltzAndroid && typeof window.ZipwaltzAndroid.shopOpen === 'function'; // B8e
+  if (!android && (!handler || typeof handler.postMessage !== 'function')) return;
+  setPremiumEntitlements(event?.detail?.products);
+});
+// B8d: the shop as the native store sees it. Prices come only from the store (StoreKit displayPrice), and
+// buyable lists what the store would sell right now: never something owned, never the Founder's Bundle to a
+// Supporter Pack owner or outside its window (the native store decides both). Looks only; owning still comes
+// only from slingshot:entitlements. Null on the web and until the app sends it.
+const PREMIUM_PACK_NAMES = Object.freeze({ 'pack.pulsar': 'Pulsar Comets', 'pack.ghosts': 'Rival Ghost Styles',
+  'pack.strings': 'Strings Pack', 'pack.finish': 'Finish Effects', 'pack.founders': "Founder's Bundle" });
+const PREMIUM_SHOP_ORDER = Object.freeze(['pack.founders', 'pack.pulsar', 'pack.ghosts', 'pack.strings', 'pack.finish']);
+let premiumShop = null; // { prices: { pack: text }, buyable: { pack: true }, busy, message (a shop.msg code) }
+// The Android build sets this true (android/tools/prepare_html.py); its shop is Play Billing (B8e) through the
+// ZipwaltzAndroid interface, which only takes shopOpen(), shopBuy(id) and shopRestore().
+let ANDROID_SHELL = false; // a let only so tests can drive the Android path
+const SHOP_MESSAGES = Object.freeze(['unavailable', 'offline', 'pending', 'cancelled', 'incomplete', 'failed', 'restoreFailed',
+  'unverified', 'revoked', 'nothingToRestore', 'restored', 'thanks', 'received', 'cannotBuy',
+  'failedStore', 'nothingToRestoreStore', 'restoreFailedStore']); // the *Store codes are store-neutral (Play)
+function androidShop(){
+  if (!ANDROID_SHELL) return null;
+  try { const a = window.ZipwaltzAndroid; return a && typeof a.shopOpen === 'function' ? a : null; } catch (_) { return null; }
+}
+// Asks the native store: 'shop.open', 'shop.buy' (with a product) or 'shop.restore'. Never decides anything.
+function shopAsk(type, product){
+  if (window.__ghostMode) return;
+  const a = androidShop();
+  if (!a){ Native.post(type, product ? { product } : undefined); return; }
+  try {
+    if (type === 'shop.open') a.shopOpen();
+    else if (type === 'shop.buy') a.shopBuy(String(product));
+    else if (type === 'shop.restore') a.shopRestore();
+  } catch (_) {}
+}
+function setPremiumShop(raw){
+  if (!raw || typeof raw !== 'object'){ premiumShop = null; return null; }
+  const prices = Object.create(null), buyable = Object.create(null);
+  const list = Array.isArray(raw.products) ? raw.products.slice(0, 16) : [];
+  for (let i = 0; i < list.length; i++){
+    const p = list[i];
+    if (!p || typeof p.id !== 'string' || typeof p.price !== 'string' || p.price.length > 24) continue;
+    if (p.id.indexOf(PREMIUM_PRODUCT_PREFIX) !== 0) continue;
+    const pack = p.id.slice(PREMIUM_PRODUCT_PREFIX.length);
+    if (PREMIUM_SHOP_ORDER.indexOf(pack) < 0) continue;
+    prices[pack] = p.price;
+  }
+  const can = Array.isArray(raw.buyable) ? raw.buyable.slice(0, 16) : [];
+  for (let i = 0; i < can.length; i++){
+    const id = can[i];
+    if (typeof id !== 'string' || id.indexOf(PREMIUM_PRODUCT_PREFIX) !== 0) continue;
+    const pack = id.slice(PREMIUM_PRODUCT_PREFIX.length);
+    if (PREMIUM_SHOP_ORDER.indexOf(pack) >= 0 && prices[pack]) buyable[pack] = true;
+  }
+  const message = SHOP_MESSAGES.indexOf(raw.message) >= 0 ? raw.message : '';
+  premiumShop = { prices, buyable, busy: raw.busy === true || raw.busy === 1, message };
+  if (typeof hangarOpen !== 'undefined' && hangarOpen) renderHangarKeepingPackFocus();
+  return premiumShop;
+}
+window.addEventListener('slingshot:shop', event => {
+  if (!premiumStoreShell()) return;
+  setPremiumShop(event?.detail);
+});
+// A store update rebuilds the Hangar; keep a screen reader's place on the same pack button (or Restore).
+function renderHangarKeepingPackFocus(){
+  const active = typeof document !== 'undefined' ? document.activeElement : null;
+  const key = active && active.getAttribute ? active.getAttribute('data-pack') : null;
+  renderHangar();
+  if (!key) return;
+  const next = hangarNodesWith('data-pack', key);
+  if (next && typeof next.focus === 'function') next.focus({ preventScroll: true });
+}
+function hangarNodesWith(attr, value){
+  const list = document.getElementById('hangarList');
+  const walk = node => {
+    if (!node) return null;
+    if (node.getAttribute && node.getAttribute(attr) === value) return node;
+    for (const child of node.childNodes || []){ const hit = walk(child); if (hit) return hit; }
+    return null;
+  };
+  return walk(list);
+}
+// True inside the app shell, where the native store can sell. The web only says where to buy.
+function premiumStoreShell(){
+  if (androidShop()) return true; // B8e: Play Billing
+  try { const h = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.slingshot; return !!(h && typeof h.postMessage === 'function'); }
+  catch (_) { return false; }
+}
 // N1 Game Center. Web only posts these ids. iOS submits them when the bridge exists.
 // Season 2 (1.5): Endless scoring changed, so Endless and Daily scores go to new boards. Season 1 boards
 // are frozen: nothing posts to them, and no Season 1 id is reused. Checkpoint has no Season 2 board, so a
@@ -2555,6 +2778,14 @@ function instrumentVoices(id, hz, grade){
     if (grade === 'perfect') return [v('triangle', pluck, f, .16, .16), v('sine', f * 2, f * 2, .07, .05)];
     return [v('triangle', pluck, f, .15, .14), v('sine', f * 2, f * 2, .06, .04)];
   }
+  if (id === 'strings'){
+    // B8b Nylon Strings (premium): a warm plucked string that rings longer than Pizzicato. The pluck starts
+    // on the note's own beat (delay 0) like every voicing, so the timing is identical; only the colour changes.
+    const pluck = f * 1.012;
+    if (grade === 'good') return [v('triangle', pluck, f, .26, .12)];
+    if (grade === 'perfect') return [v('triangle', pluck, f, .30, .15), v('sine', f * 1.5, f * 1.5, .18, .04, .01)];
+    return [v('triangle', pluck, f, .28, .13), v('sine', f * 2, f * 2, .16, .035, .01)];
+  }
   // bells (the default): exactly the 1.2-1.4 voicing.
   if (grade === 'good') return [v(GRADE_TONE.good.wave, f, f, GRADE_TONE.good.dur, GRADE_TONE.good.peak)];
   if (grade === 'perfect'){
@@ -2566,6 +2797,8 @@ function instrumentVoices(id, hz, grade){
 // The instrument the in-run notes and the song replay use. Falls back to the default before meta exists.
 function currentInstrumentId(){
   try {
+    const premium = premiumActive('instrument'); // B8b: an owned premium instrument wins while chosen
+    if (premium) return premium;
     if (typeof meta !== 'undefined' && meta && meta.instruments && instrumentById(meta.instruments.selected)) return meta.instruments.selected;
   } catch (e) {}
   return DEFAULT_INSTRUMENT;
@@ -4043,6 +4276,7 @@ function reset(){
   if (tutorialRun) calmRun = true;
   tutorialNext = false;
   tutorial = null;
+  tutorialMisses = 0;
   syncTutorial(false);
   endlessReplayNext = null;
   if (dailyRunLog){ dailyRunLog.calm = calmRun ? 1 : 0; dailyRunLog.ls = launchedThisSession ? 1 : 0; dailyRunLog.tut = tutorialRun ? 1 : 0; }
@@ -4404,6 +4638,34 @@ let tutorial = null;        // { beat: 1 | 2 | 3, frozen, voidLeft } while the t
 function tutorialHoldsVoid(){
   return tutorialRun && captureCount < 2 && time < VOID_FALLBACK_FRESH;
 }
+// T1e (Panels 12/12b: "show what a miss does"): while the tutorial holds the void, a comet that falls is put back in
+// orbit on the planet it launched from and its combo resets; the tutorial line says what a miss costs. Simulation
+// state only (tutorialRun, captureCount, time), so a tutorial run still replays exactly.
+let tutorialMisses = 0; // misses rescued this run
+function tutorialRescueMiss(){
+  if (!tutorialHoldsVoid() || !player || player.mode !== 'fly') return false;
+  const p = player.released || player.planet;
+  if (!p) return false;
+  player.mode = 'orbit';
+  player.planet = p;
+  player.released = null;
+  player.falling = false;
+  player.angle = Math.atan2(player.y - p.y, player.x - p.x);
+  player.snapFrom = p.capture * 0.72;
+  player.snapAge = 0;
+  player.x = p.x + Math.cos(player.angle) * player.snapFrom;
+  player.y = p.y + Math.sin(player.angle) * player.snapFrom;
+  player.vx = 0; player.vy = 0;
+  player.trail = []; // no streak from the fall to the planet
+  const linked = constellationStars.length ? constellationStars[constellationStars.length - 1] : null;
+  flightSeg = linked ? [{ x: linked.x, y: linked.y }] : []; // the missed flight is not drawn as a thread
+  orbitTime = 0; flightTime = 0; graceCount = 0;
+  if (combo > 1){ melodyBreak(); Haptics.play('comboLost'); } // a miss breaks the combo like any other
+  combo = 1;
+  rhythm.lastGrade = null; rhythm.melodyCombo = 1;
+  tutorialMisses++;
+  return true;
+}
 function startTutorial(){
   tutorial = { beat: 1, frozen: false, voidLeft: 0 };
   sectorBanner = null; // T1d: no sector name over the first beat (the next sector still announces itself)
@@ -4443,8 +4705,13 @@ function tutorialCheckFreeze(){
 function tutorialTick(dt){
   const tu = tutorial;
   if (!tu) return;
-  if (tu.beat === 1 && captureCount >= 1){ tu.beat = 2; tu.frozen = false; syncTutorial(true); }
-  if (tu.beat === 2 && captureCount >= 2){ tu.beat = 3; tu.voidLeft = TUTORIAL_VOID_SECONDS; syncTutorial(true); }
+  if (tutorialMisses !== (tu.misses || 0)){ tu.misses = tutorialMisses; tu.missLeft = 3.5; tu.frozen = false; syncTutorial(true); }
+  if (tu.missLeft > 0 && !runHeld && !suspended){
+    tu.missLeft = Math.max(0, tu.missLeft - Math.max(0, dt));
+    if (tu.missLeft === 0) syncTutorial(false);
+  }
+  if (tu.beat === 1 && captureCount >= 1){ tu.beat = 2; tu.frozen = false; tu.missLeft = 0; syncTutorial(true); }
+  if (tu.beat === 2 && captureCount >= 2){ tu.beat = 3; tu.voidLeft = TUTORIAL_VOID_SECONDS; tu.missLeft = 0; syncTutorial(true); }
   if (tu.beat === 3 && !runHeld && !suspended){
     tu.voidLeft -= Math.max(0, dt);
     if (tu.voidLeft <= 0) endTutorial(false);
@@ -4453,6 +4720,7 @@ function tutorialTick(dt){
 function tutorialLine(){
   const tu = tutorial;
   if (!tu) return '';
+  if (tu.missLeft > 0) return t('tut.missed'); // T1e
   if (tu.beat === 1){
     if (tu.frozen) return t('tut.tapNow');
     // T1b: after the tap the comet is in flight: the line says what happens next, not "watch".
@@ -5160,6 +5428,7 @@ function equipCosmetic(id){
   if (!item || meta.owned.indexOf(item.id) < 0) return false;
   if (item.kind !== 'comet' && item.kind !== 'trail' && item.kind !== 'theme') return false;
   meta.equipped[item.kind] = item.id;
+  if (item.kind === 'comet') clearPremiumChoice('comet'); // B8b: a stardust comet replaces a premium one
   applyEquippedCosmetics();
   saveMeta();
   syncMetaStrip();
@@ -5182,6 +5451,7 @@ function equipInstrument(id){
   ensureMeta();
   if (!instrumentById(id) || meta.instruments.owned.indexOf(id) < 0) return false;
   meta.instruments.selected = id;
+  clearPremiumChoice('instrument'); // B8b: a stardust pick replaces a premium one
   saveMeta();
   previewInstrument(id);
   return true;
@@ -5251,7 +5521,7 @@ function hangarAction(item, owned, locked){
   btn.setAttribute('type', 'button');
   btn.setAttribute('data-cosmetic', item.id);
   const isPack = item.kind === 'instrument';
-  const equipped = owned && (isPack ? meta.instruments.selected === item.id : meta.equipped[item.kind] === item.id);
+  const equipped = owned && !premiumActive(item.kind) && (isPack ? meta.instruments.selected === item.id : meta.equipped[item.kind] === item.id);
   if (equipped){
     btn.textContent = t('hangar.equipped');
     btn.disabled = true;
@@ -5406,7 +5676,156 @@ function renderHangar(){
       list.appendChild(row);
     }
   }
+  renderPremiumRows(list);
   syncScrollFades();
+}
+// B8b: the premium items. Owned items equip; with ?premium=preview the rest only preview (drawn in the Hangar
+// canvas, never in a run). B8d adds the pack rows above them (prices, buying and restore).
+function premiumKindOwned(kind){
+  for (let i = 0; i < PREMIUM_ITEMS.length; i++){
+    const it = PREMIUM_ITEMS[i];
+    if (it.kind === kind && it.pack !== null && premiumOwned[it.pack] === true) return true;
+  }
+  return false;
+}
+// B8d: the Premium group always shows: the packs (with prices in the app, "available in the app" on the web),
+// then the owned items to equip. Kept as a function so the Hangar has one switch for it.
+function premiumHangarVisible(){ return true; }
+function renderPremiumRows(list){
+  if (!premiumHangarVisible()) return;
+  const heading = document.createElement('div');
+  heading.className = 'hangar-kind';
+  heading.setAttribute('role', 'heading');
+  heading.setAttribute('aria-level', '3');
+  heading.textContent = t('hangar.group.premium');
+  list.appendChild(heading);
+  renderPremiumPacks(list);
+  for (let i = 0; i < PREMIUM_ITEMS.length; i++){
+    const item = PREMIUM_ITEMS[i];
+    const owned = premiumItemOwned(item.id);
+    if (!premiumPreview && (item.pack === null ? !premiumKindOwned(item.kind) : !owned)) continue;
+    const row = document.createElement('div');
+    row.className = 'hangar-row';
+    const name = document.createElement('div');
+    name.className = 'hangar-name';
+    name.textContent = tl(item.name);
+    const cost = document.createElement('div');
+    cost.className = 'hangar-cost';
+    cost.textContent = owned ? (item.pack === null ? '' : t('hangar.owned')) : ('🔒 ' + t('hangar.locked'));
+    row.addEventListener('pointerenter', ()=> previewPremium(item.id, false));
+    row.addEventListener('focusin', ()=> previewPremium(item.id, false));
+    row.appendChild(name);
+    row.appendChild(cost);
+    row.appendChild(premiumAction(item, owned));
+    list.appendChild(row);
+  }
+}
+// B8d: one row per pack. In the app: the store's price and Buy, or Owned, then Restore Purchases.
+// On the web: the packs and "Available in the app" (the web never sells; there is no web price).
+function renderPremiumPacks(list){
+  if (ANDROID_SHELL && !androidShop()) return; // an Android build without its shop never says "get the app"
+  const app = premiumStoreShell();
+  if (!app){
+    const note = document.createElement('div');
+    note.className = 'hangar-note';
+    note.textContent = t('shop.inApp');
+    list.appendChild(note);
+  } else if (!premiumShop) return; // openHangar asked the store (shop.open); slingshot:shop redraws
+  for (let i = 0; i < PREMIUM_SHOP_ORDER.length; i++){
+    const pack = PREMIUM_SHOP_ORDER[i];
+    const owned = premiumOwned[pack] === true;
+    const buyable = app && premiumShop.buyable[pack] === true;
+    if (pack === 'pack.founders' && !owned && !buyable) continue; // the bundle shows only while the store offers it
+    if (!app && pack === 'pack.founders') continue;
+    const row = document.createElement('div');
+    row.className = 'hangar-pack-row';
+    const name = document.createElement('div');
+    name.className = 'hangar-name';
+    name.textContent = tl(PREMIUM_PACK_NAMES[pack]);
+    const cost = document.createElement('div');
+    cost.className = 'hangar-cost';
+    cost.textContent = owned ? t('hangar.owned') : (app && premiumShop.prices[pack] ? premiumShop.prices[pack] : '');
+    row.appendChild(name);
+    row.appendChild(cost);
+    if (app && !owned){
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'hangar-act';
+      btn.setAttribute('type', 'button');
+      btn.setAttribute('data-pack', pack);
+      btn.textContent = t('hangar.buy');
+      // aria-disabled, not disabled: the button keeps focus while the store is busy (VoiceOver keeps its place).
+      const off = !buyable || premiumShop.busy;
+      if (off) btn.setAttribute('aria-disabled', 'true');
+      btn.setAttribute('aria-label', t('shop.buyAria', { name: tl(PREMIUM_PACK_NAMES[pack]), price: premiumShop.prices[pack] || '' }));
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        if (off || state !== 'title' || !hangarOpen) return; // never during a run
+        shopAsk('shop.buy', PREMIUM_PRODUCT_PREFIX + pack);
+      });
+      row.appendChild(btn);
+    }
+    list.appendChild(row);
+  }
+  if (!app) return;
+  if (premiumShop.message){
+    const msg = document.createElement('div');
+    msg.className = 'hangar-note';
+    msg.setAttribute('role', 'status');
+    msg.textContent = t('shop.msg.' + premiumShop.message);
+    list.appendChild(msg);
+  }
+  const restore = document.createElement('button');
+  restore.type = 'button';
+  restore.className = 'hangar-act';
+  restore.setAttribute('type', 'button');
+  restore.setAttribute('data-pack', 'restore');
+  restore.textContent = t('shop.restore');
+  if (premiumShop.busy) restore.setAttribute('aria-disabled', 'true');
+  restore.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if (premiumShop.busy || state !== 'title' || !hangarOpen) return;
+    shopAsk('shop.restore');
+  });
+  const row = document.createElement('div');
+  row.className = 'hangar-pack-row';
+  row.appendChild(restore);
+  list.appendChild(row);
+}
+function premiumAction(item, owned){
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'hangar-act';
+  btn.setAttribute('type', 'button');
+  btn.setAttribute('data-cosmetic', item.id);
+  const active = premiumActive(item.kind);
+  const equipped = owned && (item.pack === null ? !active : active === item.id);
+  if (equipped){
+    btn.textContent = t('hangar.equipped');
+    btn.disabled = true;
+    btn.setAttribute('aria-label', t('hangar.ariaEquipped', { name: tl(item.name) }));
+    return btn;
+  }
+  if (owned){
+    btn.textContent = t('hangar.equip');
+    btn.disabled = false;
+    btn.setAttribute('aria-label', t('hangar.ariaEquip', { name: tl(item.name) }));
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      if (btn.disabled || !equipPremium(item.id)) return;
+      previewPremium(item.id, true);
+      renderHangarKeepingFocus(btn, item.id);
+    });
+    return btn;
+  }
+  btn.textContent = t('hangar.previewBtn');
+  btn.disabled = false;
+  btn.setAttribute('aria-label', t('hangar.preview', { name: tl(item.name) }));
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    previewPremium(item.id, true);
+  });
+  return btn;
 }
 // 1.5 lane 21: the visible shortfall line for an unaffordable unlock. The same text is announced.
 function showHangarNote(text){
@@ -5424,6 +5843,8 @@ function openHangar(){
   subReturnId = 'hangar';
   clearHangarNote();
   cancelThemePreview();
+  premiumPreviewItem = null;
+  shopAsk('shop.open'); // B8d: each open asks the store for fresh prices and ownership
   drawThemePreview(null);
   renderHangar();
   syncScreens();
@@ -5616,6 +6037,11 @@ function syncSettingsPanel(){
   if (ghostRow){
     ghostRow.textContent = ghostShow ? t('set.ghostOn') : t('set.ghostOff');
     ghostRow.setAttribute('aria-pressed', ghostShow ? 'true' : 'false');
+  }
+  const simpleRow = document.getElementById('setSimpleGhost');
+  if (simpleRow){
+    simpleRow.textContent = simpleGhosts ? t('set.simpleGhostOn') : t('set.simpleGhostOff');
+    simpleRow.setAttribute('aria-pressed', simpleGhosts ? 'true' : 'false');
   }
 }
 function sanitizeSettings(raw){
@@ -5889,6 +6315,7 @@ bindOverlayControl('setShake', () => setReduceShake(!reduceShake));
 bindOverlayControl('setColor', () => setColorBlind(!colorBlindRings));
 bindOverlayControl('setEffects', () => setReducedEffects(!reducedEffects));
 bindOverlayControl('setGhost', () => setDailyGhostShow(!ghostShow));
+bindOverlayControl('setSimpleGhost', () => setSimpleGhosts(!simpleGhosts));
 function loadSessionCount(){
   const prev = readStoredNumber(SESSIONS_KEY);
   const base = prev === null ? 0 : Math.floor(prev);
@@ -6369,6 +6796,15 @@ function endlessRecord(){
 function readGhostShowPref(){
   try { return localStorage.getItem(DAILY_GHOST_PREF_KEY) !== 'off'; } catch (_) { return true; }
 }
+// B8b: "Simple rival ghosts" draws every ghost in the standard dots, whatever ghost style is equipped.
+function readSimpleGhostsPref(){
+  try { return localStorage.getItem(SIMPLE_GHOSTS_KEY) === 'on'; } catch (_) { return false; }
+}
+function setSimpleGhosts(on){
+  simpleGhosts = !!on;
+  try { localStorage.setItem(SIMPLE_GHOSTS_KEY, simpleGhosts ? 'on' : 'off'); } catch (_) {}
+  syncSettingsPanel();
+}
 function setDailyGhostShow(on){
   ghostShow = !!on;
   try { localStorage.setItem(DAILY_GHOST_PREF_KEY, ghostShow ? 'on' : 'off'); } catch (_) {}
@@ -6404,16 +6840,19 @@ function readDailyGhostRecord(){
 /* ---------- duel links (B4a, 1.6 "Beat my run") ----------
    A duel link carries runs in the URL fragment: #duel=<ghost>[.<ghost>...], newest first (Group Daily keeps up to
    DUEL.chainMax). A ghost is base64url (no padding) of these fields, each an unsigned LEB128 varint unless noted:
-     format (DUEL.format), rules (the sim version the run was played on), seed (uint32), H (float64, 8 bytes,
+     format (1, or 2 with a look), rules (the sim version the run was played on), seed (uint32), H (float64, 8 bytes,
      little-endian: the playfield height the run used), flags (rm | fu << 1 | aim << 2, aim 0 short, 1 full, 2 off),
-     steps, hops, score, nick (index into the preset names), n, then n events as (stepDelta << 1) | kind
-     (kind 0 release, 1 flick; stepDelta from the previous event, the first from step 0).
+     steps, hops, score, nick (index into the preset names), [format 2 only: look], n, then n events as
+     (stepDelta << 1) | kind (kind 0 release, 1 flick; stepDelta from the previous event, the first from step 0).
+   Format 2 (B8b) adds look: 1..255, the sender's premium comet skin (DUEL_LOOKS index; an index this build does
+   not know is kept and drawn plain). A ghost without a look is still written as format 1, byte for byte, so
+   builds that only read format 1 keep reading every link that has no skin. Both formats decode.
    There is no server: the receiver replays the inputs and recomputes the score, so the claimed score is shown only
    until the replay finishes. Decoding is strict: anything malformed, oversized or out of range is rejected (null).
    The codec accepts any rules version (an earlier season's runs stay readable); the replay decides what it can play.
    Nothing here touches storage, the live run or the network. */
 const DUEL = Object.freeze({
-  format: 1,
+  format: 2,              // the newest format this build writes (format 1 when the ghost has no look)
   ghostMaxChars: 300,     // one ghost in the fragment
   fragmentMaxChars: 2000, // the whole fragment, '#' included: stays intact in messaging apps
   chainMax: 6,            // ghosts per link (Group Daily)
@@ -6422,6 +6861,8 @@ const DUEL = Object.freeze({
   prefix: '#duel='
 });
 const DUEL_AIM = Object.freeze(['short', 'full', 'off']);
+// Format 2 looks: append only (an index is permanent once shipped). 0 is no look.
+const DUEL_LOOKS = Object.freeze(['', 'p-beacon', 'p-magnetar', 'p-binary']);
 // Preset nicknames only (no free text): 16 adjectives x 16 nouns, index = adjective * 16 + noun.
 const DUEL_NICK_ADJ = Object.freeze(['Swift', 'Bright', 'Quiet', 'Lucky', 'Brave', 'Calm', 'Wild', 'Clever',
   'Sunny', 'Cosmic', 'Gentle', 'Bold', 'Merry', 'Nimble', 'Steady', 'Dreamy']);
@@ -6505,6 +6946,7 @@ function duelGhostValid(g){
   if (!Number.isInteger(g.hops) || g.hops < 0 || g.hops > g.steps + 1) return false;
   if (!Number.isInteger(g.score) || g.score < 0 || g.score > DUEL.maxScore) return false;
   if (!Number.isInteger(g.nick) || g.nick < 0 || g.nick >= DUEL_NICK_COUNT) return false;
+  if (g.look !== undefined && (!Number.isInteger(g.look) || g.look < 0 || g.look > 255)) return false;
   if (!Array.isArray(g.ev)) return false;
   let last = 0;
   for (const v of g.ev){
@@ -6520,7 +6962,8 @@ function duelGhostValid(g){
 function encodeDuelGhost(g){
   if (!duelGhostValid(g)) return null;
   const bytes = [];
-  duelPushVarint(bytes, DUEL.format);
+  const look = g.look | 0;
+  duelPushVarint(bytes, look > 0 ? 2 : 1);
   duelPushVarint(bytes, g.rules);
   duelPushVarint(bytes, g.seed);
   duelPushFloat64(bytes, g.H);
@@ -6529,6 +6972,7 @@ function encodeDuelGhost(g){
   duelPushVarint(bytes, g.hops);
   duelPushVarint(bytes, g.score);
   duelPushVarint(bytes, g.nick);
+  if (look > 0) duelPushVarint(bytes, look);
   duelPushVarint(bytes, g.ev.length);
   let last = 0;
   for (const v of g.ev){
@@ -6545,11 +6989,15 @@ function decodeDuelGhost(text){
   if (!bytes) return null;
   const at = { i: 0 };
   const rd = () => duelReadVarint(bytes, at);
-  if (rd() !== DUEL.format) return null;
+  const format = rd();
+  if (format !== 1 && format !== 2) return null;
   const rules = rd(), seed = rd();
   const H0 = duelReadFloat64(bytes, at);
-  const flags = rd(), steps = rd(), hops = rd(), score = rd(), nick = rd(), n = rd();
-  if ([rules, seed, H0, flags, steps, hops, score, nick, n].some(v => v === null)) return null;
+  const flags = rd(), steps = rd(), hops = rd(), score = rd(), nick = rd();
+  const look = format === 2 ? rd() : 0;
+  const n = rd();
+  if ([rules, seed, H0, flags, steps, hops, score, nick, look, n].some(v => v === null)) return null;
+  if (format === 2 && !(look >= 1 && look <= 255)) return null; // format 2 always carries a look
   if (flags > 11 || (flags >> 2) > 2) return null;
   if (n > DUEL.maxSteps * 2) return null;
   const ev = [];
@@ -6562,6 +7010,7 @@ function decodeDuelGhost(text){
   }
   if (at.i !== bytes.length) return null; // trailing bytes
   const g = { rules, seed, H: H0, rm: flags & 1, fu: (flags >> 1) & 1, ag: DUEL_AIM[flags >> 2], steps, hops, score, nick, ev };
+  if (format === 2) g.look = look; // a format 1 ghost has no look field, as before
   return duelGhostValid(g) ? g : null;
 }
 // ghosts: newest first. Returns '#duel=a.b.c' or null when a ghost is invalid or the link would be too long.
@@ -6595,6 +7044,8 @@ function duelRecord(nick){
   if (!duelActive || state !== 'dead' || !log || log.bad) return null;
   const g = { rules: GHOST_SIM_VERSION, seed: duelRunSeed >>> 0, H: log.H, rm: 0, fu: 1, ag: log.ag,
     steps: log.n, hops, score: cleanScore(death ? death.score : score), nick: nick | 0, ev: log.ev.slice() };
+  const look = DUEL_LOOKS.indexOf(premiumActive('comet') || ''); // B8b: an owned, equipped skin shows to rivals
+  if (look > 0) g.look = look;
   return duelGhostValid(g) ? g : null;
 }
 // B4b score check, test hook: replays a decoded ghost in this page with no frames and returns its numbers. Like
@@ -6735,18 +7186,20 @@ function duelResultLine(you){
   const pl = duelFinalPlace; // B6: a field adds your finishing place
   return pl ? line + ' · ' + t('duel.place', { p: pl.place, n: pl.of }) : line;
 }
-// The link that sends this finished duel back: my run first, then the chain I received. Only where this page has
-// a web address to point at (the public duel page, B7, is John's call); the app and file pages share no link yet.
+// The link that sends this finished duel back: my run first, then the chain I received, on the live duel page.
 function duelReplyLink(){
-  let base = '';
-  try {
-    const loc = window.location;
-    if (loc.protocol === 'https:' || loc.protocol === 'http:') base = loc.origin + loc.pathname;
-  } catch (_) {}
-  if (!base) return '';
+  let base = DUEL_PAGE_URL; // B7b: the live duel page, from the app and every other page
+  if (WEB_DUEL_PAGE){
+    try {
+      const loc = window.location;
+      if (loc.protocol === 'https:' || loc.protocol === 'http:') base = loc.origin + loc.pathname; // a copy of the page links to itself
+    } catch (_) {}
+  }
   const mine = duelRecord(myDuelNick());
   if (!mine) return '';
-  const frag = encodeDuelFragment(duelReplyGhosts(mine, duelIncoming ? duelIncoming.chain : []));
+  const chain = duelIncoming ? duelIncoming.chain : [];
+  let frag = encodeDuelFragment(duelReplyGhosts(mine, chain));
+  if (!frag && mine.look){ delete mine.look; frag = encodeDuelFragment(duelReplyGhosts(mine, chain)); } // too long with my skin: send the run without it
   return frag ? base + frag : '';
 }
 // B5 race: one ghost instance kept for the armed duel, loaded once the rival's score is checked and reused for
@@ -7132,28 +7585,70 @@ function drawGhostComet(gh, ghostColor){
     if (left <= 0) return false;
     alpha *= left;
   }
+  paintGhost(ctx, gh, ghostColor, alpha, simpleGhosts ? null : premiumActive('ghost'));
+  // A rival's premium skin (duel link format 2) rides on their ghost, in the ghost's fade. The ghost keeps its
+  // own colour, so who is who still reads; Simple rival ghosts leaves it off.
+  const lookId = gh.duel && gh.rec && !simpleGhosts ? DUEL_LOOKS[gh.rec.look | 0] : '';
+  if (lookId && PREMIUM_COMET_INK[lookId]) paintPremiumCometAccent(ctx, lookId, gh.out[0], gh.out[1], premiumSpin(), alpha);
+  return true;
+}
+// One ghost's trail and head on context g. style is a premium ghost id (B8b) or null for the standard dots.
+// Every style keeps the ghost's own colour and the same head (filled core plus ring), so who is who still
+// reads the same; Settings "Simple rival ghosts" passes null whatever is equipped.
+function paintGhost(g, gh, ghostColor, alpha, style){
   const reduce = reducedMotion;
   const count = Math.min(gh.tn, DAILY_GHOST_TRAIL);
-  ctx.save();
-  ctx.fillStyle = ghostColor;
-  for (let i = 0; i < count; i++){
-    const k = (gh.tn - count + i) % DAILY_GHOST_TRAIL;
-    const age = (i + 1) / (count + 1);
-    // Reduced Motion: the trail holds still (no flicker).
-    const flicker = reduce ? 1 : 0.8 + 0.2 * Math.sin(time * 11 + k * 1.7);
-    ctx.globalAlpha = alpha * 0.35 * age * flicker;
-    ctx.beginPath(); ctx.arc(gh.trail[k * 2], gh.trail[k * 2 + 1], 3 + 3 * age, 0, Math.PI * 2); ctx.fill();
+  g.save();
+  g.fillStyle = ghostColor;
+  g.strokeStyle = ghostColor;
+  if (style === 'g-wisp'){
+    // One tapering stroke through the trail: thin and faint at the tail.
+    g.lineCap = 'round';
+    for (let i = 1; i < count; i++){
+      const k0 = (gh.tn - count + i - 1) % DAILY_GHOST_TRAIL, k1 = (gh.tn - count + i) % DAILY_GHOST_TRAIL;
+      const x0 = gh.trail[k0 * 2], y0 = gh.trail[k0 * 2 + 1], x1 = gh.trail[k1 * 2], y1 = gh.trail[k1 * 2 + 1];
+      const dx = x1 - x0, dy = y1 - y0;
+      if (dx * dx + dy * dy > 6400) continue; // never draw a bar across a jump
+      const age = (i + 1) / (count + 1);
+      g.globalAlpha = alpha * 0.5 * age;
+      g.lineWidth = 1 + 7 * age;
+      g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+    }
+  } else if (style === 'g-prism'){
+    // Diamonds that grow toward the head.
+    for (let i = 0; i < count; i++){
+      const k = (gh.tn - count + i) % DAILY_GHOST_TRAIL;
+      const age = (i + 1) / (count + 1);
+      g.globalAlpha = alpha * 0.45 * age;
+      paintConstellationMark(g, gh.trail[k * 2], gh.trail[k * 2 + 1], 2 + 4.5 * age);
+    }
+  } else if (style === 'g-echo'){
+    // Hollow rings, every other point, widening as they fall behind like ripples.
+    g.lineWidth = 1.3;
+    for (let i = count % 2; i < count; i += 2){
+      const k = (gh.tn - count + i) % DAILY_GHOST_TRAIL;
+      const age = (i + 1) / (count + 1);
+      g.globalAlpha = alpha * 0.55 * age;
+      g.beginPath(); g.arc(gh.trail[k * 2], gh.trail[k * 2 + 1], 3 + 7 * (1 - age), 0, Math.PI * 2); g.stroke();
+    }
+  } else {
+    for (let i = 0; i < count; i++){
+      const k = (gh.tn - count + i) % DAILY_GHOST_TRAIL;
+      const age = (i + 1) / (count + 1);
+      // Reduced Motion: the trail holds still (no flicker).
+      const flicker = reduce ? 1 : 0.8 + 0.2 * Math.sin(time * 11 + k * 1.7);
+      g.globalAlpha = alpha * 0.35 * age * flicker;
+      g.beginPath(); g.arc(gh.trail[k * 2], gh.trail[k * 2 + 1], 3 + 3 * age, 0, Math.PI * 2); g.fill();
+    }
   }
-  ctx.globalAlpha = alpha;
-  ctx.shadowColor = ghostColor;
-  ctx.shadowBlur = reduce ? 0 : 12;
-  ctx.beginPath(); ctx.arc(gh.out[0], gh.out[1], 7, 0, Math.PI * 2); ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.strokeStyle = ghostColor;
-  ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.arc(gh.out[0], gh.out[1], 10, 0, Math.PI * 2); ctx.stroke();
-  ctx.restore();
-  return true;
+  g.globalAlpha = alpha;
+  g.shadowColor = ghostColor;
+  g.shadowBlur = reduce ? 0 : 12;
+  g.beginPath(); g.arc(gh.out[0], gh.out[1], 7, 0, Math.PI * 2); g.fill();
+  g.shadowBlur = 0;
+  g.lineWidth = 1.5;
+  g.beginPath(); g.arc(gh.out[0], gh.out[1], 10, 0, Math.PI * 2); g.stroke();
+  g.restore();
 }
 // Test and audit hook: replays a validated record in a fresh ghost instance. The live game is not touched.
 // hook(win), if given, runs before the replay and may return a function whose value is reported as extra.
@@ -7171,6 +7666,7 @@ async function replayDailyGhostRecord(rec, hook){
   return out;
 }
 ghostShow = readGhostShowPref();
+simpleGhosts = readSimpleGhostsPref();
 if (document.documentElement) ghostSourceCache = ghostSourceFrom(document.documentElement.outerHTML); // pristine: taken once at start-up
 setTimeout(armDuelFromHash, 0); // B4c: a page opened from a duel link arms it (after the rest of start-up)
 syncSettingsPanel();
@@ -7397,6 +7893,7 @@ function armRetryReady(){
 
 function die(reason){
   if (state !== 'playing') return;
+  if (reason === 'void' && tutorialRescueMiss()) return; // T1e: a tutorial miss is shown, not fatal (before the shield)
   if (reason === 'void' && tryShieldVoid()) return;
   sectorLayerWanted = null;
   stopSectorLayer();
@@ -7976,6 +8473,9 @@ function update(dt){
     }
   }
   if (player.y > voidY){ die('void'); return; }
+  // T1e: in the tutorial a miss is rescued as soon as the falling comet is a little below the screen (the parked void
+  // is further down, so waiting for it would leave about a second of empty screen).
+  if (player.mode === 'fly' && player.vy > 0 && player.y > cam.y + H + 40 && tutorialRescueMiss()) return;
 
   spawnAhead();
 
@@ -9321,6 +9821,9 @@ function skyShareInfo(){
 // The App Store page of app 6822071006. It resolves once 1.0 is public; only pre-release
 // TestFlight shares can reach it early.
 const SHARE_STORE_URL = 'https://apps.apple.com/app/id6822071006';
+// B7b: the live duel page (support site). A duel's reply link points here from the app, Endless pages and itch;
+// the duel page itself uses its own address. Share text only, never loaded by the game.
+const DUEL_PAGE_URL = 'https://shortriddles334.github.io/slingshot-support/duel/';
 // Wordle-style glyph line (1.4). One glyph per catch, plus one per flick, in order:
 // PERFECT, GOOD, ungraded or revisit catch, and the flick itself. Spoiler-free: the glyphs carry
 // no sky layout or positions. The log is bounded; the counts stay exact for the whole run.
@@ -9645,7 +10148,7 @@ function trailInk(){
   const equipped = meta && meta.equipped ? cosmeticById(meta.equipped.trail) : null;
   if (equipped && equipped.kind === 'trail' && equipped.id !== 'thread' &&
       typeof equipped.style === 'string' && equipped.style.charAt(0) === '#') return equipped.style;
-  const ink = cometPalette(cometStyle);
+  const ink = premiumCometInk() || cometPalette(cometStyle);
   return ink[player && player.mode === 'fly' ? 'fly' : 'orbit'];
 }
 let cometStyle = 'classic';
@@ -9684,7 +10187,7 @@ function syncSupporterBadge(){
 }
 // A rank trail the player equipped keeps its own tint; Overdrive keeps its warm stroke.
 function supporterTrailPaint(i, n){
-  if (!supporterStyle || (state === 'playing' && combo >= 12)) return null;
+  if (!supporterStyle || (state === 'playing' && combo >= 12) || premiumActive('comet')) return null;
   const equipped = meta && meta.equipped ? cosmeticById(meta.equipped.trail) : null;
   if (equipped && equipped.kind === 'trail' && equipped.id !== 'thread') return null;
   const ink = COMET_STYLES[supporterStyle];
@@ -9720,6 +10223,208 @@ function drawSupporterHalo(){
   }
   ctx.restore();
   ctx.globalAlpha = 1;
+}
+/* ---------- B8b premium looks (drawing only) ---------- */
+// Visibility: every core is near-white and every rim light, so each skin reads on every sky (tests check
+// the contrast against each theme and sector sky). The live-catch band and Overdrive colours still replace
+// the rim: those are game signals, and no skin hides them.
+const PREMIUM_COMET_INK = Object.freeze({
+  'p-beacon': Object.freeze({ core: '#F2FBFF', rim: '#8FDFFF', glow: '#6FD0FF', fly: '#9FE4FF', orbit: '#D6F4FF' }),
+  'p-magnetar': Object.freeze({ core: '#FFF2FF', rim: '#E59BFF', glow: '#C86BFF', fly: '#E3A6FF', orbit: '#FFB7F0' }),
+  'p-binary': Object.freeze({ core: '#FFF8E6', rim: '#FFCB7A', glow: '#FFB04A', fly: '#FFD69A', orbit: '#A8DCFF' })
+});
+function premiumCometInk(){
+  const id = premiumActive('comet');
+  return id ? PREMIUM_COMET_INK[id] : null;
+}
+function premiumSpin(){ return reducedMotion ? 0 : performance.now() / 1000 * 1.8; }
+// The skin's moving part around a comet at (x, y) on context g. spin is radians (0 under Reduce Motion).
+function paintPremiumCometAccent(g, id, x, y, spin, fade){
+  const ink = PREMIUM_COMET_INK[id];
+  if (!ink) return;
+  const fa = fade === undefined ? 1 : fade; // a ghost's accent takes the ghost's own alpha
+  g.save();
+  g.translate(x, y);
+  if (id === 'p-beacon'){
+    // Two beams sweep like a lighthouse.
+    g.rotate(spin);
+    g.globalAlpha = 0.55 * fa;
+    g.fillStyle = ink.glow;
+    for (let k = 0; k < 2; k++){
+      g.rotate(Math.PI);
+      g.beginPath(); g.moveTo(-2.2, -11); g.lineTo(0, -24); g.lineTo(2.2, -11); g.closePath(); g.fill();
+    }
+  } else if (id === 'p-magnetar'){
+    // Two field loops that turn slowly.
+    g.rotate(spin * 0.5);
+    g.globalAlpha = 0.6 * fa;
+    g.strokeStyle = ink.glow;
+    g.lineWidth = 1.2;
+    for (let k = 0; k < 2; k++){
+      g.rotate(Math.PI / 2);
+      // Short semi-axis 12.75: clear of the rim (radius 10, stroke 2.5), so the band colour stays whole.
+      g.save(); g.scale(1, 0.75); g.beginPath(); g.arc(0, 0, 17, 0, Math.PI * 2); g.restore();
+      g.stroke();
+    }
+  } else {
+    // Binary: a small companion star circles the comet on a faint orbit.
+    const a = spin * 1.4;
+    g.globalAlpha = 0.25 * fa;
+    g.strokeStyle = ink.orbit;
+    g.lineWidth = 1;
+    g.beginPath(); g.arc(0, 0, 15, 0, Math.PI * 2); g.stroke();
+    g.globalAlpha = 0.9 * fa;
+    g.fillStyle = ink.orbit;
+    g.beginPath(); g.arc(Math.cos(a) * 15, Math.sin(a) * 15, 2.6, 0, Math.PI * 2); g.fill();
+  }
+  g.restore();
+}
+// Finish reveals: drawn over the constellation reveal in screen space from its progress u (0 to 1, then a
+// 0.6 fade). stars and thread are world points; screen = t + s * world. Fixed lanes, no random numbers.
+function paintFinish(g, id, u, stars, thread, tx, ty, s, w, h){
+  const fade = u <= 1 ? 1 : Math.max(0, 1 - (u - 1) / 0.6);
+  if (!(fade > 0)) return;
+  const v = Math.min(1, Math.max(0, u));
+  g.save();
+  if (id === 'f-supernova'){
+    // A ring bursts from the last star, with a cooler inner ring and eight rays.
+    const last = stars.length ? stars[stars.length - 1] : null;
+    const cx = last ? tx + s * last.x : w / 2, cy = last ? ty + s * last.y : h / 2;
+    const e = 1 - Math.pow(1 - v, 3);
+    const r = 12 + e * Math.max(w, h) * 0.45;
+    g.globalAlpha = 0.75 * (1 - 0.7 * e) * fade;
+    g.strokeStyle = '#FFE7A3';
+    g.lineWidth = 3;
+    g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.stroke();
+    g.strokeStyle = '#9FE4FF';
+    g.lineWidth = 1.5;
+    g.beginPath(); g.arc(cx, cy, r * 0.72, 0, Math.PI * 2); g.stroke();
+    g.strokeStyle = '#FFF4D2';
+    g.beginPath();
+    for (let k = 0; k < 8; k++){
+      const a = k * Math.PI / 4, ca = Math.cos(a), sa = Math.sin(a);
+      g.moveTo(cx + ca * r * 0.3, cy + sa * r * 0.3);
+      g.lineTo(cx + ca * r * 0.55, cy + sa * r * 0.55);
+    }
+    g.stroke();
+  } else if (id === 'f-meteor'){
+    // Nine streaks fall across the sky on fixed lanes, staggered.
+    g.lineCap = 'round';
+    g.strokeStyle = '#FFF4D2';
+    g.lineWidth = 2;
+    for (let i = 0; i < 9; i++){
+      const p = (u - 0.6 * depthHash(i, 21)) / 0.45;
+      if (!(p > 0 && p < 1)) continue;
+      const x = w * (0.15 + 0.85 * depthHash(i, 22)) - h * 0.4 * p;
+      const y = h * (0.1 * depthHash(i, 23) - 0.05) + h * 0.9 * p;
+      g.globalAlpha = 0.85 * Math.sin(p * Math.PI) * fade;
+      g.beginPath(); g.moveTo(x + 0.41 * 46, y - 0.91 * 46); g.lineTo(x, y); g.stroke();
+    }
+  } else if (id === 'f-thread'){
+    // A spark runs the thread from start to end; each star it passes flashes a ring.
+    const n = thread.length;
+    if (n >= 2){
+      const pos = v * (n - 1), i = Math.min(n - 2, Math.floor(pos)), f = pos - i;
+      const x = tx + s * (thread[i].x + (thread[i + 1].x - thread[i].x) * f);
+      const y = ty + s * (thread[i].y + (thread[i + 1].y - thread[i].y) * f);
+      g.globalAlpha = fade;
+      g.fillStyle = '#FFE7A3';
+      g.shadowColor = '#FFD966';
+      g.shadowBlur = reducedEffects ? 0 : 14;
+      g.beginPath(); g.arc(x, y, 4.5, 0, Math.PI * 2); g.fill();
+      g.shadowBlur = 0;
+    }
+    g.strokeStyle = '#FFE7A3';
+    g.lineWidth = 2;
+    const m = stars.length;
+    for (let j = 0; j < m; j++){
+      const at = m > 1 ? j / (m - 1) : 1;
+      if (v < at) continue;
+      const age = Math.min(1, (u - at) / 0.25);
+      if (age >= 1) continue;
+      g.globalAlpha = 0.9 * (1 - age) * fade;
+      g.beginPath(); g.arc(tx + s * stars[j].x, ty + s * stars[j].y, 6 + 14 * age, 0, Math.PI * 2); g.stroke();
+    }
+  }
+  g.restore();
+}
+// The equipped finish over the live reveal. Reduce Motion has no reveal to dress, so it draws nothing.
+function drawFinishReveal(fitted){
+  if (!fitted || state !== 'dead' || reducedMotion) return;
+  const id = premiumActive('finish');
+  if (!id) return;
+  // Same clock as constellationView, so a share clip's replay shows it too. A short reveal still gives the
+  // finish the full reveal time (it plays on behind the card) instead of a half-second flash.
+  const u = (performance.now() - (clipReplayAt || revealStartedAt)) / Math.max(revealDurationMs, CONSTELLATION.revealMs);
+  if (!(u >= 0) || u > 1.6) return;
+  paintFinish(ctx, id, u, constellationStars, constellationThread, fitted.tx, fitted.ty, fitted.scale, W, H);
+}
+// Hangar preview of one premium item (drawing only; never equips). The backdrop is the equipped theme's sky.
+const PREMIUM_PREVIEW_STARS = Object.freeze([
+  Object.freeze({ x: 30, y: 52 }), Object.freeze({ x: 78, y: 26 }), Object.freeze({ x: 124, y: 46 }),
+  Object.freeze({ x: 170, y: 20 }), Object.freeze({ x: 212, y: 40 })
+]);
+let premiumPreviewGhost = null;
+function drawPremiumPreview(id){
+  const item = premiumItemById(id);
+  if (!item) return;
+  drawThemePreview(null);
+  const name = document.getElementById('hangarPreviewName');
+  if (name) name.textContent = t('hangar.preview', { name: tl(item.name) });
+  const canvas = document.getElementById('hangarPreviewCanvas');
+  if (!canvas || typeof canvas.getContext !== 'function') return;
+  let g = null;
+  try { g = canvas.getContext('2d'); } catch (_) { g = null; }
+  if (!g) return;
+  const w = canvas.width, h = canvas.height, cx = w / 2, cy = h / 2;
+  g.save();
+  if (item.kind === 'comet'){
+    const ink = PREMIUM_COMET_INK[item.id];
+    g.strokeStyle = ink.fly; g.lineWidth = 2; g.globalAlpha = 0.8;
+    g.beginPath(); g.moveTo(cx - 90, cy + 14); g.lineTo(cx - 10, cy + 2); g.stroke();
+    g.globalAlpha = 1;
+    g.fillStyle = ink.core;
+    g.beginPath(); g.arc(cx, cy, 7, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = ink.rim; g.lineWidth = 2.5;
+    g.beginPath(); g.arc(cx, cy, 10, 0, Math.PI * 2); g.stroke();
+    paintPremiumCometAccent(g, item.id, cx, cy, 0.7);
+  } else if (item.kind === 'ghost'){
+    if (!premiumPreviewGhost){
+      const trail = new Array(DAILY_GHOST_TRAIL * 2);
+      for (let i = 0; i < DAILY_GHOST_TRAIL; i++){
+        trail[i * 2] = 24 + i * (cx - 24) / DAILY_GHOST_TRAIL;
+        trail[i * 2 + 1] = cy + 14 * Math.sin(i * 0.45);
+      }
+      premiumPreviewGhost = { tn: DAILY_GHOST_TRAIL, trail, out: [cx + 4, cy + 14 * Math.sin(DAILY_GHOST_TRAIL * 0.45)] };
+    }
+    paintGhost(g, premiumPreviewGhost, '#FFD2A8', 0.9, item.pack === null ? null : item.id);
+  } else if (item.kind === 'instrument'){
+    // Four strings, one plucked.
+    g.strokeStyle = '#F3EFFF'; g.lineWidth = 1.2;
+    for (let k = 0; k < 4; k++){
+      g.globalAlpha = 0.45 + 0.1 * k;
+      const y = cy - 18 + k * 12;
+      g.beginPath(); g.moveTo(24, y);
+      if (k === 1) g.lineTo(cx, y - 6);
+      g.lineTo(w - 24, y); g.stroke();
+    }
+  } else {
+    const pts = PREMIUM_PREVIEW_STARS;
+    g.strokeStyle = CONSTELLATION.thread; g.lineWidth = 1.4; g.globalAlpha = 0.8;
+    g.beginPath(); g.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) g.lineTo(pts[i].x, pts[i].y);
+    g.stroke();
+    g.globalAlpha = 1; g.fillStyle = CONSTELLATION.star;
+    for (let i = 0; i < pts.length; i++) paintConstellationMark(g, pts[i].x, pts[i].y, 4);
+    if (item.pack !== null) paintFinish(g, item.id, 0.55, pts, pts, 0, 0, 1, w, h);
+  }
+  g.restore();
+}
+function previewPremium(id, withSound){
+  premiumPreviewItem = id;
+  drawPremiumPreview(id);
+  const item = premiumItemById(id);
+  if (withSound && item && item.kind === 'instrument') previewInstrument(item.id);
 }
 /* ---------- drawing ---------- */
 // Color-blind mode: visited and unvisited latch rings differ by dash and a glyph.
@@ -9838,18 +10543,21 @@ function drawCometBody(){
   const over = state === 'playing' && combo >= 12;
   const squash = punch && state === 'playing' ? cometSquash(Math.max(0, time - punch.t), punch.combo, reducedMotion) : { along: 1, across: 1 };
   const flat = Math.abs(squash.along - 1) < 0.012 && Math.abs(squash.across - 1) < 0.012;
-  ctx.shadowColor = over && !reducedMotion ? '#FFB25E' : PAL.gold;
+  // B8b: an owned premium skin sets the core, rim and glow. The band and Overdrive colours still win.
+  const skinId = premiumActive('comet');
+  const skin = skinId ? PREMIUM_COMET_INK[skinId] : null;
+  ctx.shadowColor = over && !reducedMotion ? '#FFB25E' : skin ? skin.glow : PAL.gold;
   ctx.shadowBlur = over && !reducedMotion ? 18 : 12;
-  ctx.fillStyle = supporterActive() ? '#FFF1BF' : '#FFFFFF';
+  ctx.fillStyle = skin ? skin.core : supporterActive() ? '#FFF1BF' : '#FFFFFF';
   // Inside the band (the live catch) the rim takes the band's colour: a static change, no pulse.
-  ctx.strokeStyle = arcCometInside ? RHYTHM.arcBand : over ? '#FFB25E' : PAL.gold;
+  ctx.strokeStyle = arcCometInside ? RHYTHM.arcBand : over ? '#FFB25E' : skin ? skin.rim : PAL.gold;
   ctx.lineWidth = 2.5;
   if (flat){
     ctx.beginPath(); ctx.arc(player.x, player.y, 7, 0, Math.PI*2); ctx.fill();
     ctx.shadowBlur = 0;
     if (!reducedEffects) cometLimb(player.x, player.y);
     ctx.beginPath(); ctx.arc(player.x, player.y, 10, 0, Math.PI*2); ctx.stroke();
-    drawSupporterHalo();
+    if (skinId) paintPremiumCometAccent(ctx, skinId, player.x, player.y, premiumSpin()); else drawSupporterHalo();
     return;
   }
   const span = punch.vx * punch.vx + punch.vy * punch.vy;
@@ -9866,7 +10574,7 @@ function drawCometBody(){
   ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI*2); ctx.stroke();
   ctx.restore();
   ctx.shadowBlur = 0;
-  drawSupporterHalo();
+  if (skinId) paintPremiumCometAccent(ctx, skinId, player.x, player.y, premiumSpin()); else drawSupporterHalo();
 }
 function drawOverdriveEdge(){
   if (state !== 'playing' || combo < 12) return;
@@ -10452,6 +11160,7 @@ function draw(){
   if (fitted) strokeConstellation(ctx, false, 1 / fitted.scale);
 
   ctx.restore(); // camera
+  drawFinishReveal(fitted);
   ctx.restore(); // shake
   drawSectorBanner();
   drawConfetti();
