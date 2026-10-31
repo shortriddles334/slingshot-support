@@ -57,3 +57,15 @@ footer .container { display: flex; gap: 14px; justify-content: space-between; fl
   main { padding-top: 34px; }
   .panel { padding: 18px; }
 }
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; margin: 0; }
+.facts dt { color: #bfb9d3; font-weight: 650; }
+.facts dd { margin: 0; overflow-wrap: anywhere; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin: 16px 0 28px; }
+.gallery figure { margin: 0; }
+.gallery img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid #524e79; }
+.gallery figcaption { font-size: .88rem; color: #bfb9d3; margin-top: 6px; }
+.press-icon { width: 160px; height: 160px; border-radius: 36px; }
+@media (max-width: 540px) {
+  .facts { grid-template-columns: 1fr; gap: 2px; }
+  .facts dd { margin-bottom: 10px; }
+}
